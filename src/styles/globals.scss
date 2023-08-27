@@ -1,0 +1,31 @@
+@import "normalize.css";
+@import "tailwindcss/base";
+@import "tailwindcss/components";
+@import "tailwindcss/utilities";
+@import "@/components/Form/formStyle.scss";
+
+@keyframes spinner {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+.loading-spinner {
+  width: 24px;
+  height: 24px;
+  border: 5px solid #f3f3f3; /* Light grey */
+  border-top: 5px solid #868181; /* Blue */
+  border-radius: 50%;
+  animation: spinner 1.5s linear infinite;
+}
+
+.spinner-container {
+  display: grid;
+  justify-content: center;
+  align-items: center;
+}
+.color-primary {
+  color: #9333ea;
+}

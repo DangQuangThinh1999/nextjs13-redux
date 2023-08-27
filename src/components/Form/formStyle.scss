@@ -1,0 +1,10 @@
+.wrapperError {
+  p {
+    color: #bf1650;
+  }
+
+  p::before {
+    display: inline;
+    content: "⚠ ";
+  }
+}
