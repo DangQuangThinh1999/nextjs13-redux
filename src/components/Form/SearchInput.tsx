@@ -1,17 +1,22 @@
-'use client';
+"use client";
 import search from "@/assets/search.svg";
 import { ChangeEvent, useEffect, useState } from "react";
-
 import Image from "next/image";
-
 import useDebounce from "@/hooks/useDebounce";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
-import { setQueryParam } from "@/redux/slice/productSlice";
+import { useRouter, useSearchParams } from "next/navigation";
+import { getProducts } from "../../../app/api/getProducts";
+import { setResultItems } from "@/redux/slice/productSlice";
 
 const SearchInput = () => {
+  const { tokenAuth } = useSelector((state: RootState) => state.auth);
   const { queryParameters } = useSelector((state: RootState) => state.product);
   const dispatch = useDispatch();
+  const router = useRouter();
+  const url = useSearchParams();
+  const sortTypeUrl = url.get("sortType");
+  const pageUrl = url.get("page");
   const [searchTerm, setSearchTerm] = useState<string>("");
   const debouncedSearchTerm = useDebounce<string>(searchTerm, 1000);
   const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -21,11 +26,25 @@ const SearchInput = () => {
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const handlePathChange = async () => {
+    if (debouncedSearchTerm?.length === 0) {
+      dispatch(
+        setResultItems({ queryParameters: queryParameters, resultItems: [] })
+      );
+    }
     const queryParams = {
       ...queryParameters,
+      sortType: sortTypeUrl === null ? null : sortTypeUrl,
+      page: pageUrl === null ? null : +pageUrl,
       searchTerm: debouncedSearchTerm as string,
     };
-    dispatch(setQueryParam({ queryParameters: queryParams }));
+    const response = await getProducts(queryParams, tokenAuth);
+    const result = response?.data.items;
+    dispatch(
+      setResultItems({ queryParameters: queryParams, resultItems: result })
+    );
+    router.push(
+      `/products?searchTerm=${debouncedSearchTerm}&page=${pageUrl}&sortType=${sortTypeUrl}&sortBy=${queryParameters.sortBy}&active=$${queryParameters.active}`
+    );
   };
   useEffect(() => {
     handlePathChange();

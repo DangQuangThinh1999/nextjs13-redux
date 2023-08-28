@@ -38,9 +38,9 @@ export interface ISnapshotProduct {
   pagination?: IPagination;
 }
 export interface IQueryParams {
-  searchTerm: string;
-  page: number;
-  sortType: string;
+  searchTerm: string | null;
+  page: number | null;
+  sortType: string | null;
   sortBy: string;
   active: boolean;
 }

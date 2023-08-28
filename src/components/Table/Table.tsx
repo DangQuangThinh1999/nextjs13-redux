@@ -1,7 +1,7 @@
 "use client";
-import React, { useState } from "react";
+import { useMemo, useState } from "react";
 
-import { IProduct } from "@/types";
+import { IProduct, IQueryParams } from "@/types";
 import TableItem from "./TableItem";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
@@ -9,25 +9,47 @@ import {
   ArrowLongDownIcon,
   ArrowLongUpIcon,
 } from "@heroicons/react/24/outline";
-import { setQueryParam } from "@/redux/slice/productSlice";
-import { useRouter } from "next/navigation";
+import { setQueryParam, setResultItems } from "@/redux/slice/productSlice";
+import { getProducts } from "../../../app/api/getProducts";
+import { useRouter, useSearchParams } from "next/navigation";
 
 interface ITableProps {
   data?: IProduct[];
 }
 const Table: React.FC<ITableProps> = ({ data }) => {
-  const { queryParameters } = useSelector((state: RootState) => state.product);
+  const { queryParameters, resultItems } = useSelector(
+    (state: RootState) => state.product
+  );
+  const url = useSearchParams();
+  const pageUrl = url.get("page");
+  const searchTermUrl = url.get("searchTerm");
+  const router = useRouter();
+  const { tokenAuth } = useSelector((state: RootState) => state.auth);
   const dispatch = useDispatch();
   const [sort, setSort] = useState(false);
-  const router = useRouter();
-  const handleSortName = () => {
+
+  const handleSortName = async () => {
     setSort((value) => !value);
     const queryParams = {
       ...queryParameters,
+      page: pageUrl === null ? null : +pageUrl,
       sortType: sort ? "desc" : "asc",
+      searchTerm: searchTermUrl === null ? null : searchTermUrl,
     };
-    dispatch(setQueryParam({ queryParameters: queryParams }));
+    const response = await getProducts(queryParams, tokenAuth);
+    const result = response?.data.items;
+    dispatch(
+      setResultItems({ queryParameters: queryParams, resultItems: result })
+    );
+    router.push(
+      `/products?searchTerm=${searchTermUrl}&page=${pageUrl}&sortType=${
+        queryParameters.sortType
+      }&sortBy=${sort ? "desc" : "asc"}&active=$${queryParameters.active}`
+    );
   };
+  const resultData = useMemo(() => {
+    return resultItems && resultItems.length > 0 ? resultItems : data;
+  }, [resultItems, data]);
   return (
     <div className="overflow-hidden rounded-lg border border-gray-200 shadow-md m-5">
       <table className="w-full border-collapse bg-white text-left text-sm text-gray-500">
@@ -65,16 +87,17 @@ const Table: React.FC<ITableProps> = ({ data }) => {
           </tr>
         </thead>
         <tbody className="divide-y divide-gray-100 border-t border-gray-100">
-          {data?.map((item, index) => (
-            <TableItem
-              key={index}
-              price={item.price}
-              productImage={item.ProductImage}
-              name={item.name}
-              active={item.active}
-              id={item.id}
-            />
-          ))}
+          {Array.isArray(resultData) &&
+            resultData?.map((item: any, index: any) => (
+              <TableItem
+                key={index}
+                price={item.price}
+                productImage={item.ProductImage}
+                name={item.name}
+                active={item.active}
+                id={item.id}
+              />
+            ))}
         </tbody>
       </table>
       {data === undefined && (

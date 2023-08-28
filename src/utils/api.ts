@@ -17,7 +17,7 @@ const api: AxiosInstance = axios.create({
 export function setAuthToken(token: string | "") {
   authToken = token;
 }
-api.defaults.timeout = 5000; //1000 = 1s
+// api.defaults.timeout = 1000; //1000 = 1s
 // Add request interceptor to add authentication header
 api.interceptors.request.use(
   async (config: InternalAxiosRequestConfig<any>) => {
@@ -27,14 +27,13 @@ api.interceptors.request.use(
     return config;
   }
 );
-export function delete_cookie(name:string) {
-  document.cookie = name +'=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+export function delete_cookie(name: string) {
+  document.cookie = name + "=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;";
 }
-export function hasCookie(cookieName:string) {
-  const cookies = document.cookie.split('; ');
-  console.log(cookies)
+export function hasCookie(cookieName: string) {
+  const cookies = document.cookie.split("; ");
   for (const cookie of cookies) {
-    const [name] = cookie.split('=');
+    const [name] = cookie.split("=");
     if (name === cookieName) {
       return true;
     }
@@ -45,7 +44,7 @@ export function hasCookie(cookieName:string) {
 api.interceptors.response.use(
   (response: AxiosResponse) => response,
   (error: any) => {
-    delete_cookie("access_token")
+    delete_cookie("access_token");
     // Handle error responses
     return Promise.reject(error);
   }
