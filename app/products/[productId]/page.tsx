@@ -2,8 +2,8 @@ import { Suspense } from "react";
 
 import type { Metadata } from "next";
 
-import { notFound } from "next/navigation";
-import { store } from "@/redux/store";
+import { notFound, redirect } from "next/navigation";
+
 import { cookies } from "next/headers";
 import { getProductById } from "../../api/getProducts";
 
@@ -16,7 +16,6 @@ type Params = {
 export async function generateMetadata({
   params: { productId },
 }: Params): Promise<Metadata> {
-  const query = store.getState().product.queryParameters;
   const token = cookies().get("access_token")?.value;
 
   const response = await getProductById(productId, token);
@@ -35,6 +34,7 @@ export async function generateMetadata({
 
 export default async function ProductIdPage({ params: { productId } }: Params) {
   const token = cookies().get("access_token")?.value;
+  if (!token) redirect("/auth/login");
   const response = await getProductById(productId, token);
   if (!response?.data.id) notFound();
   return (
