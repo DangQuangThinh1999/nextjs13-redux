@@ -10,6 +10,7 @@ import Image from "next/image";
 import CustomButton from "../CustomButton";
 import { useState } from "react";
 import { loginUI } from "../../../app/api/auth";
+import { useRouter } from "next/navigation";
 
 const LoginForm = () => {
   const {
@@ -19,7 +20,7 @@ const LoginForm = () => {
   } = useForm<ICredentials>({
     criteriaMode: "all",
   });
-
+const router = useRouter()
   const [error, setError] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const dispatch = useDispatch();
@@ -29,7 +30,7 @@ const LoginForm = () => {
       setIsLoading(true);
       const response = await loginUI(data);
       dispatch(login({ user: data, tokenAuth: response }));
-
+      router.push("/")
       // You can handle the response data here
     } catch (error) {
       setError(true);

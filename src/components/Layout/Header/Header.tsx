@@ -13,6 +13,7 @@ import icon from "@/assets/icon.svg";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import Background from "../Background";
+import { hasCookie } from "@/utils/api";
 const navigation = [
   { name: "Product", href: "#" },
   { name: "Features", href: "#" },
@@ -22,12 +23,14 @@ const navigation = [
 
 export default function Example() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const { isAuthenticated, user } = useSelector(
+  const {  user } = useSelector(
     (state: RootState) => state.auth
   );
   const dispatch = useDispatch();
   const pathName = usePathname();
   const isShowButtonLogin = pathName.includes("login");
+  const cookieExists = hasCookie('access_token');
+
   return (
     <div className="bg-white">
       <header className="fixed backdrop-blur-2xl inset-x-0 top-0 z-50">
@@ -55,15 +58,15 @@ export default function Example() {
               <Bars3Icon className="h-6 w-6" aria-hidden="true" />
             </button>
           </div>
-          {isAuthenticated && <Nav />}
+          {cookieExists && <Nav />}
           <div className="hidden lg:flex lg:flex-1 lg:justify-end space-x-3">
-            {isAuthenticated && (
+            {cookieExists && (
               <p className="flex items-center font-bold">
                 Hi {user?.username} !
               </p>
             )}
 
-            {isAuthenticated ? (
+            {cookieExists ? (
               <CustomButton
                 text={"Logout"}
                 onClick={() => dispatch(logout())}

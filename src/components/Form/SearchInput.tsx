@@ -1,3 +1,4 @@
+'use client';
 import search from "@/assets/search.svg";
 import { ChangeEvent, useEffect, useState } from "react";
 

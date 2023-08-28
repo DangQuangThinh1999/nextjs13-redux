@@ -1,18 +1,20 @@
 import { ICredentials } from "@/types";
+import { delete_cookie } from "@/utils/api";
 
 // src/features/counterSlice.ts
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
+
 interface IAuthContextData {
   tokenAuth?: string;
   user?: ICredentials | null;
-  isAuthenticated?: boolean;
+
 }
 
 const initialState: IAuthContextData = {
   tokenAuth: "",
   user: null,
-  isAuthenticated: false,
+
 };
 
 const authSlice = createSlice({
@@ -26,15 +28,13 @@ const authSlice = createSlice({
       state.user = action.payload.user;
       state.tokenAuth = action.payload.tokenAuth;
       if (state.tokenAuth) {
-        state.isAuthenticated = true;
         document.cookie = `access_token=${state.tokenAuth}; path=/;`;
       }
     },
     logout: (state: IAuthContextData) => {
-      document.cookie = "access_token=; path=/;";
+      delete_cookie('access_token')
       state.user = null;
       state.tokenAuth = "";
-      state.isAuthenticated = false;
     },
   },
 });
