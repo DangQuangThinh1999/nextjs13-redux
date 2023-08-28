@@ -8,9 +8,8 @@ import { useSelector } from "react-redux";
 import { CameraIcon, CheckBadgeIcon } from "@heroicons/react/24/outline";
 
 const Profile = () => {
-  const { isAuthenticated } = useSelector((state: RootState) => state.auth);
   const router = useRouter();
-  if (!isAuthenticated) router.push("/");
+
   return (
     <div className="overflow-hidden rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
       <div className="relative z-20 h-35 md:h-65">

@@ -43,7 +43,7 @@ const TableItem: React.FC<ITableItemProps> = ({
       <td className="px-6 py-4">
         <div className="flex gap-2">
           <span className="inline-flex items-center gap-1 rounded-full px-2 py-1 text-normal font-semibold text-violet-600 hover:underline">
-            <Link href={`/product/${id}`}>{name}</Link>
+            <Link href={`/products/${id}`}>{name}</Link>
           </span>
         </div>
       </td>

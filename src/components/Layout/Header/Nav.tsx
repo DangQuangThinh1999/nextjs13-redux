@@ -1,6 +1,7 @@
-import { setQueryParam } from "@/redux/slice/productSlice";
+import { setQueryParam, setResultItems } from "@/redux/slice/productSlice";
+import { RootState } from "@/redux/store";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 interface IHref {
   pathname: string;
@@ -9,16 +10,7 @@ interface IHref {
 const navigation = [
   {
     name: "product",
-    href: {
-      pathname: "/products",
-      query: {
-        searchTerm: "",
-        page: 1,
-        sortType: "asc",
-        sortBy: "name",
-        active: true,
-      },
-    },
+    href: "products?searchTerm=&page=1&sortType=asc&sortBy=name&active=true",
   },
   { name: "blog", href: "/blog" },
   { name: "profile", href: "/profile" },
@@ -27,26 +19,18 @@ const navigation = [
 
 export const Nav = () => {
   const router = useRouter();
-  const searchParams = useSearchParams();
+  const { queryParameters } = useSelector((state: RootState) => state.product);
   const pathName = usePathname();
 
   const dispatch = useDispatch();
   const handleClick = (href: string | IHref) => {
-    if (typeof href === "string") router.push(href);
-    else {
-      dispatch(
-        setQueryParam({
-          queryParameters: {
-            searchTerm: "",
-            page: 1,
-            sortType: "asc",
-            sortBy: "name",
-            active: true,
-          },
-        })
-      );
-
-      router.push(href.pathname, href.query);
+    if (typeof href === "string") {
+      router.push(href);
+      if (href.includes("products")) {
+        dispatch(
+          setResultItems({ queryParameters: queryParameters, resultItems: [] })
+        );
+      }
     }
   };
   return (
