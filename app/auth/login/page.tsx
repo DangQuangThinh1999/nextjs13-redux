@@ -1,17 +1,12 @@
 "use client";
 import LoginForm from "@/components/Form/LoginForm";
-
-import { RootState } from "@/redux/store";
-
+import { hasCookie } from "@/utils/api";
 import { useRouter } from "next/navigation";
-
-import { useSelector } from "react-redux";
 
 export default function Login() {
   const router = useRouter();
-
-  const { isAuthenticated } = useSelector((state: RootState) => state.auth);
-  if (isAuthenticated === true) router.push("/");
+  const cookieExists = hasCookie('access_token');
+  if (cookieExists) router.push("/");
   return (
     <div className="h-screen md:flex">
       <div className="relative overflow-hidden md:flex w-1/2 bg-gradient-to-tr from-blue-800 to-purple-700 i justify-around items-center hidden">

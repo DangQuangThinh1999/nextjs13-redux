@@ -1,3 +1,4 @@
+'use client';
 import axios from "axios";
 import { useEffect, useState } from "react";
 
@@ -5,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 import { setQueryParam } from "@/redux/slice/productSlice";
+import {store} from "@/redux/store"
 
 const maxPage = [1, 2, 3, 4, 5];
 
@@ -16,6 +18,7 @@ export default function PaginationTable() {
   const [pageActive, setPageActive] = useState<number>(1);
   const dispatch = useDispatch();
   const router = useRouter();
+  console.log(store.getState())
   const handleChangePagination = (index: number) => {
     const indexPage = index + 4 * numberPage;
     setPageActive(indexPage);

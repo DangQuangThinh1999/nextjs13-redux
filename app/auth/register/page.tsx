@@ -1,16 +1,13 @@
 "use client";
 import RegisterForm from "@/components/Form/RegisterForm";
-import { RootState } from "@/redux/store";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import React, { useState } from "react";
-import { useSelector } from "react-redux";
 import bitcoinSrc from "@/assets/bitcoin.png";
+import { hasCookie } from "@/utils/api";
 export default function Register() {
   const router = useRouter();
-
-  const { isAuthenticated } = useSelector((state: RootState) => state.auth);
-  if (isAuthenticated === true) router.push("/");
+  const cookieExists = hasCookie('access_token');
+  if (cookieExists) router.push("/");
   return (
     <div className="h-screen md:flex">
       <div className="relative overflow-hidden md:flex w-1/2 bg-gradient-to-tr from-blue-800 to-purple-700 i justify-around items-center hidden">
