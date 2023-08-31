@@ -37,7 +37,7 @@ export default function PaginationTable() {
       setResultItems({ queryParameters: queryParams, resultItems: result })
     );
     router.push(
-      `/products?searchTerm=${searchTermUrl}&page=${indexPage}&sortType=${sortTypeUrl}&sortBy=${queryParameters.sortBy}&active=$${queryParameters.active}`
+      `/products?searchTerm=${searchTermUrl}&page=${indexPage}&sortType=${sortTypeUrl}&sortBy=${queryParameters.sortBy}&active=${queryParameters.active}`
     );
   };
 

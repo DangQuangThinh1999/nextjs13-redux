@@ -23,6 +23,7 @@ const Table: React.FC<ITableProps> = ({ data }) => {
   const url = useSearchParams();
   const pageUrl = url.get("page");
   const searchTermUrl = url.get("searchTerm");
+
   const router = useRouter();
   const { tokenAuth } = useSelector((state: RootState) => state.auth);
   const dispatch = useDispatch();
@@ -36,19 +37,24 @@ const Table: React.FC<ITableProps> = ({ data }) => {
       sortType: sort ? "desc" : "asc",
       searchTerm: searchTermUrl === null ? null : searchTermUrl,
     };
+    handleSortType(queryParams);
+  };
+
+  const handleSortType = async (queryParams: IQueryParams) => {
     const response = await getProducts(queryParams, tokenAuth);
     const result = response?.data.items;
+    console.log(result);
     dispatch(
       setResultItems({ queryParameters: queryParams, resultItems: result })
     );
     router.push(
       `/products?searchTerm=${searchTermUrl}&page=${pageUrl}&sortType=${
         queryParameters.sortType
-      }&sortBy=${sort ? "desc" : "asc"}&active=$${queryParameters.active}`
+      }&sortBy=${sort ? "desc" : "asc"}&active=${queryParameters.active}`
     );
   };
   const resultData = useMemo(() => {
-    return resultItems && resultItems.length > 0 ? resultItems : data;
+    return resultItems ? resultItems : data;
   }, [resultItems, data]);
   return (
     <div className="overflow-hidden rounded-lg border border-gray-200 shadow-md m-5">
@@ -100,7 +106,7 @@ const Table: React.FC<ITableProps> = ({ data }) => {
             ))}
         </tbody>
       </table>
-      {data === undefined && (
+      {resultData && resultData.length === 0 && (
         <div className="bg-gray-200 w-full h-[500px] flex items-center justify-center shadow-md">
           <p
             className="h-[200px] w-[400px]  rounded border border-dashed items-center justify-center flex

@@ -43,7 +43,7 @@ const SearchInput = () => {
       setResultItems({ queryParameters: queryParams, resultItems: result })
     );
     router.push(
-      `/products?searchTerm=${debouncedSearchTerm}&page=${pageUrl}&sortType=${sortTypeUrl}&sortBy=${queryParameters.sortBy}&active=$${queryParameters.active}`
+      `/products?searchTerm=${debouncedSearchTerm}&page=${pageUrl}&sortType=${sortTypeUrl}&sortBy=${queryParameters.sortBy}&active=${queryParameters.active}`
     );
   };
   useEffect(() => {

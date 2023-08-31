@@ -24,7 +24,8 @@ function Products({ response }: { response?: AxiosResponse<any, any> }) {
   );
 }
 
-export default async function Page() {
+export default async function Page(props: any) {
+  console.log("Page", props);// get params nextjs 13 to sever side
   const query = store.getState().product.queryParameters;
   const token = cookies().get("access_token")?.value;
   const response = await getProducts(query, token);

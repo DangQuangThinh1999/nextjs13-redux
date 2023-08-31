@@ -2,6 +2,7 @@ import { setQueryParam, setResultItems } from "@/redux/slice/productSlice";
 import { RootState } from "@/redux/store";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
+import { getProducts } from "../../../../app/api/getProducts";
 
 interface IHref {
   pathname: string;
@@ -19,16 +20,22 @@ const navigation = [
 
 export const Nav = () => {
   const router = useRouter();
-  const { queryParameters } = useSelector((state: RootState) => state.product);
+
+  const { queryParameters, resultItems } = useSelector(
+    (state: RootState) => state.product
+  );
   const pathName = usePathname();
 
   const dispatch = useDispatch();
-  const handleClick = (href: string | IHref) => {
+  const handleClick = async (href: string | IHref) => {
     if (typeof href === "string") {
       router.push(href);
       if (href.includes("products")) {
         dispatch(
-          setResultItems({ queryParameters: queryParameters, resultItems: [] })
+          setResultItems({
+            queryParameters: queryParameters,
+            resultItems: resultItems,
+          })
         );
       }
     }
